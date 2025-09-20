@@ -1,7 +1,7 @@
 export function Marketing() {
   return (
     <div className="bg-blue-500 min-h-svh">
-      <div className="bg-amber-200 max-w-5xl mx-auto">
+      <div className="bg-amber-200 max-w-6xl mx-auto">
         <header>
           <nav>
             <div>logo fitdash</div>
