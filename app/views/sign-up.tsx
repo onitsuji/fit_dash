@@ -58,7 +58,7 @@ export function SignUpView() {
       },
       {
         onSuccess: () => {
-          navigate("/dashboard"); // ✅ client-side redirect works now
+          navigate("/dashboard");
         },
         onError: (ctx) => {
           console.error("Sign up error:", ctx.error);
