@@ -22,6 +22,8 @@ import {
 } from "~/components/ui/form";
 
 import { Input } from "~/components/ui/input";
+import { authClient } from "~/lib/auth-client";
+import { useNavigate } from "react-router";
 
 const accountSchema = z
   .object({
@@ -36,6 +38,7 @@ const accountSchema = z
   });
 
 export function SignUpView() {
+  const navigate = useNavigate();
   const form = useForm<z.infer<typeof accountSchema>>({
     resolver: zodResolver(accountSchema),
     defaultValues: {
@@ -47,14 +50,31 @@ export function SignUpView() {
   });
 
   const onSumbit = async (values: z.infer<typeof accountSchema>) => {
-    console.log(values);
+    authClient.signUp.email(
+      {
+        name: values.name,
+        email: values.email,
+        password: values.password,
+      },
+      {
+        onSuccess: () => {
+          navigate("/dashboard"); // ✅ client-side redirect works now
+        },
+        onError: (ctx) => {
+          console.error("Sign up error:", ctx.error);
+          form.setError("email", {
+            message: ctx.error.message ?? "Something went wrong",
+          });
+        },
+      },
+    );
   };
 
   return (
-    <div>
+    <div className="">
+      {/* Card with signup form */}
       <div>
-        {/* Card with signup form */}
-        <Card>
+        <Card className="">
           <CardHeader>
             <CardTitle>Welcome to Fitdash</CardTitle>
             <CardDescription>
@@ -125,7 +145,6 @@ export function SignUpView() {
           </CardContent>
         </Card>
       </div>
-      <div>{/* Logo with Company info - hidden on mobile*/}</div>
     </div>
   );
 }
