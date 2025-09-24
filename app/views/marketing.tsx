@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import { Button } from "~/components/ui/button";
 
-export function Marketing() {
+export function MarketingView() {
   return (
     <div className="min-h-svh">
       <div className="max-w-6xl mx-auto">
