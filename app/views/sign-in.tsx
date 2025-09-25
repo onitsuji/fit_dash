@@ -25,38 +25,26 @@ import { Input } from "~/components/ui/input";
 import { useState } from "react";
 import { Alert, AlertDescription, AlertTitle } from "~/components/ui/alert";
 
-const accountSchema = z
-  .object({
-    name: z.string().min(1, "Name is required"),
-    email: z.string().min(1, "Email is required"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-    confirmPassword: z
-      .string()
-      .min(8, "Password must be at least 8 characters"),
-  })
-  .refine((data) => data.password === data.confirmPassword, {
-    message: "Passwords do not match.",
-    path: ["confirmPassword"],
-  });
+const accountSchema = z.object({
+  email: z.string().min(1, "Email is required"),
+  password: z.string().min(8, "Password must be at least 8 characters"),
+});
 
-export function SignUpView() {
+export function SignInView() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const form = useForm<z.infer<typeof accountSchema>>({
     resolver: zodResolver(accountSchema),
     defaultValues: {
-      name: "",
       email: "",
       password: "",
-      confirmPassword: "",
     },
   });
 
   const onSumbit = async (values: z.infer<typeof accountSchema>) => {
-    authClient.signUp.email(
+    authClient.signIn.email(
       {
-        name: values.name,
         email: values.email,
         password: values.password,
       },
@@ -75,27 +63,14 @@ export function SignUpView() {
     <div className="flex items-center justify-center flex-col min-h-svh w-full">
       <Card className="w-md md:w-xl">
         <CardHeader>
-          <CardTitle>Welcome to Fitdash</CardTitle>
+          <CardTitle>Welcome back to Fitdash</CardTitle>
           <CardDescription>
-            Create your account to unlock all the features
+            Enter your credentials and get back to your fitness journey.
           </CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSumbit)} className="space-y-8">
-              <FormField
-                control={form.control}
-                name="name"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <FormField
                 control={form.control}
                 name="email"
@@ -122,19 +97,6 @@ export function SignUpView() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="confirmPassword"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Confirm Password</FormLabel>
-                    <FormControl>
-                      <Input {...field} type="password" />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
               <Button type="submit" disabled={form.formState.isSubmitting}>
                 Submit
               </Button>
@@ -151,17 +113,6 @@ export function SignUpView() {
             ) : null}
           </Form>
         </CardContent>
-        <CardFooter>
-          <p className="text-xs">
-            By signing up, you agree to our{" "}
-            <strong className="font-medium underline">Terms of Service</strong>{" "}
-            and
-            <strong className="font-medium underline">
-              {" "}
-              Data Processing Agreement.
-            </strong>
-          </p>
-        </CardFooter>
       </Card>
     </div>
   );

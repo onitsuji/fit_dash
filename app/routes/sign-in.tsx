@@ -1,3 +1,9 @@
+import { SignInView } from "~/views/sign-in";
+
 export default function SignIn() {
-  return <p>Sign in</p>;
+  return (
+    <div>
+      <SignInView />
+    </div>
+  );
 }
