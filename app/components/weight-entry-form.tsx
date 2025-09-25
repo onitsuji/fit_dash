@@ -1,12 +1,5 @@
 import { z } from "zod";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card";
-import {
   Form,
   FormControl,
   FormField,
@@ -24,15 +17,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "./ui/select";
+import { Button } from "./ui/button";
 
-// User will input a weight value and then have a preference in their preferred unit.
 const entrySchema = z.object({
-  weight: z.number().min(0).max(1000),
+  weight: z.coerce.number().min(1, "Weight must be greater than 0").max(1000),
   unit: z.enum(["kg", "lbs"]),
 });
 
-export function WeightEntryForm() {
-  const form = useForm<z.infer<typeof entrySchema>>({
+export function WeightEntryForm({ onSuccess }: { onSuccess: () => void }) {
+  const form = useForm({
     resolver: zodResolver(entrySchema),
     defaultValues: {
       weight: 0,
@@ -41,57 +34,58 @@ export function WeightEntryForm() {
   });
 
   const onSubmit = async (values: z.infer<typeof entrySchema>) => {
-    // Handle form submission here
+    try {
+      // Implement db here
+
+      onSuccess?.();
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Log Your Weight</CardTitle>
-        <CardDescription>
-          Enter your weight in your preferred unit.
-        </CardDescription>
-      </CardHeader>
-      <CardContent>
-        <Form {...form}>
-          <form>
-            <FormField
-              control={form.control}
-              name="weight"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Weight</FormLabel>
-                  <FormControl>
-                    <Input {...field} type="number" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="unit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Unit</FormLabel>
-                  <FormControl>
-                    <Select onValueChange={field.onChange} value={field.value}>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select a unit" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="kg">Kilograms</SelectItem>
-                        <SelectItem value="lbs">Pounds</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </form>
-        </Form>
-      </CardContent>
-    </Card>
+    <Form {...form}>
+      <form className="space-y-4" onSubmit={form.handleSubmit(onSubmit)}>
+        <FormField
+          control={form.control}
+          name="weight"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Weight</FormLabel>
+              <FormControl>
+                <Input
+                  {...field}
+                  type="number"
+                  value={field.value?.toString() ?? ""}
+                />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <FormField
+          control={form.control}
+          name="unit"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Unit</FormLabel>
+              <FormControl>
+                <Select onValueChange={field.onChange} value={field.value}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a unit" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="kg">Kilograms</SelectItem>
+                    <SelectItem value="lbs">Pounds</SelectItem>
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button type="submit">Submit</Button>
+      </form>
+    </Form>
   );
 }
