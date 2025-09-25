@@ -1,5 +1,9 @@
-import { WeightEntryForm } from "~/components/weight-entry-form";
-
 export function DashboardHomeView() {
-  return <WeightEntryForm />;
+  return (
+    <>
+      {/*Line Chart for Weight Entries*/}
+      {/* Habit Streak */}
+      {/* Habit Contribution Chart */}
+    </>
+  );
 }
