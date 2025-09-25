@@ -7,8 +7,10 @@ export default function DashboardLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>
-        <SidebarTrigger />
+      <main className="w-full">
+        <div>
+          <SidebarTrigger />
+        </div>
         <Outlet />
       </main>
     </SidebarProvider>
